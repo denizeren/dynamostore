@@ -10,6 +10,7 @@ import (
 	"github.com/crowdmob/goamz/aws"
 	"github.com/crowdmob/goamz/dynamodb"
 	"github.com/gorilla/sessions"
+	"math/rand"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -18,6 +19,15 @@ import (
 type FlashMessage struct {
 	Type    int
 	Message string
+}
+
+func randSeq(n int) string {
+	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }
 
 func TestDynamoStore(t *testing.T) {
@@ -42,8 +52,10 @@ func TestDynamoStore(t *testing.T) {
 
 	server := dynamodb.New(awsAuth, aws.Region{Name: "eu-west-1", DynamoDBEndpoint: "http://127.0.0.1:8000"})
 
+	dummyTableName := randSeq(10)
+
 	tableDesc := dynamodb.TableDescriptionT{
-		TableName: "sessions",
+		TableName: dummyTableName,
 		AttributeDefinitions: []dynamodb.AttributeDefinitionT{
 			dynamodb.AttributeDefinitionT{"Id", "S"},
 		},
@@ -60,7 +72,7 @@ func TestDynamoStore(t *testing.T) {
 	defer server.DeleteTable(tableDesc)
 
 	// Round 1 ----------------------------------------------------------------
-	store, err := NewDynamoStoreWithRegionObj("dummy", "dummy", aws.Region{Name: "eu-west-1", DynamoDBEndpoint: "http://127.0.0.1:8000"})
+	store, err := NewDynamoStoreWithRegionObj("dummy", "dummy", tableDesc.TableName, aws.Region{Name: "eu-west-1", DynamoDBEndpoint: "http://127.0.0.1:8000"})
 	if err != nil {
 		t.Fatalf("Error creating dynamostore: %v", err)
 	}

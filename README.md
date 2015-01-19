@@ -1,4 +1,4 @@
-# DynamoStore [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/denizeren/dynamostore) 
+# DynamoStore [![GoDoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](http://godoc.org/github.com/denizeren/dynamostore) [![Build Status](https://travis-ci.org/denizeren/dynamostore.svg?branch=master)](https://travis-ci.org/denizeren/dynamostore)
 
 A session store backend for [gorilla/sessions](http://www.gorillatoolkit.org/pkg/sessions) - [src](https://github.com/gorilla/sessions).
 

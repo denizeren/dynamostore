@@ -27,14 +27,14 @@ type DynamoData struct {
 	Data []byte
 }
 
-func NewDynamoStore(accessKey string, secretKey string, region string) (*DynamoStore, error) {
+func NewDynamoStore(accessKey string, secretKey string, tableName string, region string) (*DynamoStore, error) {
 	awsAuth := aws.Auth{
 		AccessKey: accessKey,
 		SecretKey: secretKey,
 	}
 
 	server := dynamodb.New(awsAuth, aws.GetRegion(region))
-	table := server.NewTable("sessions", dynamodb.PrimaryKey{KeyAttribute: dynamodb.NewStringAttribute("Id", "")})
+	table := server.NewTable(tableName, dynamodb.PrimaryKey{KeyAttribute: dynamodb.NewStringAttribute("Id", "")})
 
 	dynStore := &DynamoStore{
 		Table:  table,
@@ -44,14 +44,14 @@ func NewDynamoStore(accessKey string, secretKey string, region string) (*DynamoS
 	return dynStore, nil
 }
 
-func NewDynamoStoreWithRegionObj(accessKey string, secretKey string, region aws.Region) (*DynamoStore, error) {
+func NewDynamoStoreWithRegionObj(accessKey string, secretKey string, tableName string, region aws.Region) (*DynamoStore, error) {
 	awsAuth := aws.Auth{
 		AccessKey: accessKey,
 		SecretKey: secretKey,
 	}
 
 	server := dynamodb.New(awsAuth, region)
-	table := server.NewTable("sessions", dynamodb.PrimaryKey{KeyAttribute: dynamodb.NewStringAttribute("Id", "")})
+	table := server.NewTable(tableName, dynamodb.PrimaryKey{KeyAttribute: dynamodb.NewStringAttribute("Id", "")})
 
 	dynStore := &DynamoStore{
 		Table:  table,
