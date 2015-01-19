@@ -8,6 +8,7 @@ package dynamostore
 import (
 	"encoding/gob"
 	"github.com/crowdmob/goamz/aws"
+	"github.com/crowdmob/goamz/dynamodb"
 	"github.com/gorilla/sessions"
 	"net/http"
 	"net/http/httptest"
@@ -32,6 +33,31 @@ func TestDynamoStore(t *testing.T) {
 	// Copyright 2012 The Gorilla Authors. All rights reserved.
 	// Use of this source code is governed by a BSD-style
 	// license that can be found in the LICENSE file.
+
+	// Create dummy table
+	awsAuth := aws.Auth{
+		AccessKey: "dummy",
+		SecretKey: "dummy",
+	}
+
+	server := dynamodb.New(awsAuth, aws.Region{Name: "eu-west-1", DynamoDBEndpoint: "http://127.0.0.1:8000"})
+
+	tableDesc := dynamodb.TableDescriptionT{
+		TableName: "sessions",
+		AttributeDefinitions: []dynamodb.AttributeDefinitionT{
+			dynamodb.AttributeDefinitionT{"Id", "S"},
+		},
+		KeySchema: []dynamodb.KeySchemaT{
+			dynamodb.KeySchemaT{"Id", "HASH"},
+		},
+		ProvisionedThroughput: dynamodb.ProvisionedThroughputT{
+			ReadCapacityUnits:  1,
+			WriteCapacityUnits: 1,
+		},
+	}
+
+	server.CreateTable(tableDesc)
+	defer server.DeleteTable(tableDesc)
 
 	// Round 1 ----------------------------------------------------------------
 	store, err := NewDynamoStoreWithRegionObj("dummy", "dummy", aws.Region{Name: "eu-west-1", DynamoDBEndpoint: "http://127.0.0.1:8000"})

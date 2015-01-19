@@ -1,0 +1,22 @@
+language: go
+go: 1.4
+
+jdk:
+  - openjdk6
+  - openjdk7
+  - oraclejdk7
+
+install:
+  - mkdir /tmp/dynamodb
+  - wget -O - http://dynamodb-local.s3-website-us-west-2.amazonaws.com/dynamodb_local_latest | tar xz --directory /tmp/dynamodb
+
+before_script:
+  - java -Djava.library.path=/tmp/dynamodb/dynamodb/DynamoDBLocal_lib -jar /tmp/dynamodb/DynamoDBLocal.jar -inMemory &
+  # TODO solve java start issues 
+  - sleep 5
+
+before_install:
+    - go get github.com/crowdmob/goamz/aws
+    - go get github.com/crowdmob/goamz/dynamodb
+    - go get github.com/gorilla/securecookie
+    - go get github.com/gorilla/sessions
