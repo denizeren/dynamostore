@@ -72,7 +72,7 @@ func TestDynamoStore(t *testing.T) {
 	defer server.DeleteTable(tableDesc)
 
 	// Round 1 ----------------------------------------------------------------
-	store, err := NewDynamoStoreWithRegionObj("dummy", "dummy", tableDesc.TableName, aws.Region{Name: "eu-west-1", DynamoDBEndpoint: "http://127.0.0.1:8000"})
+	store, err := NewDynamoStoreWithRegionObj("dummy", "dummy", tableDesc.TableName, aws.Region{Name: "eu-west-1", DynamoDBEndpoint: "http://127.0.0.1:8000"}, []byte("secret-key"))
 	if err != nil {
 		t.Fatalf("Error creating dynamostore: %v", err)
 	}

@@ -27,12 +27,12 @@ type DynamoData struct {
 	Data []byte
 }
 
-func NewDynamoStore(accessKey string, secretKey string, tableName string, region string) (*DynamoStore, error) {
+func NewDynamoStore(accessKey string, secretKey string, tableName string, region string, keyPairs ...[]byte) (*DynamoStore, error) {
 	regionObj := aws.GetRegion(region)
-	return NewDynamoStoreWithRegionObj(accessKey, secretKey, tableName, regionObj)
+	return NewDynamoStoreWithRegionObj(accessKey, secretKey, tableName, regionObj, keyPairs...)
 }
 
-func NewDynamoStoreWithRegionObj(accessKey string, secretKey string, tableName string, region aws.Region) (*DynamoStore, error) {
+func NewDynamoStoreWithRegionObj(accessKey string, secretKey string, tableName string, region aws.Region, keyPairs ...[]byte) (*DynamoStore, error) {
 	awsAuth := aws.Auth{
 		AccessKey: accessKey,
 		SecretKey: secretKey,
@@ -43,7 +43,7 @@ func NewDynamoStoreWithRegionObj(accessKey string, secretKey string, tableName s
 
 	dynStore := &DynamoStore{
 		Table:  table,
-		Codecs: securecookie.CodecsFromPairs([]byte(secretKey)),
+		Codecs: securecookie.CodecsFromPairs(keyPairs...),
 	}
 
 	return dynStore, nil
