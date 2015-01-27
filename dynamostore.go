@@ -28,20 +28,8 @@ type DynamoData struct {
 }
 
 func NewDynamoStore(accessKey string, secretKey string, tableName string, region string) (*DynamoStore, error) {
-	awsAuth := aws.Auth{
-		AccessKey: accessKey,
-		SecretKey: secretKey,
-	}
-
-	server := dynamodb.New(awsAuth, aws.GetRegion(region))
-	table := server.NewTable(tableName, dynamodb.PrimaryKey{KeyAttribute: dynamodb.NewStringAttribute("Id", "")})
-
-	dynStore := &DynamoStore{
-		Table:  table,
-		Codecs: securecookie.CodecsFromPairs([]byte(secretKey)),
-	}
-
-	return dynStore, nil
+	regionObj := aws.GetRegion(region)
+	return NewDynamoStoreWithRegionObj(accessKey, secretKey, tableName, regionObj)
 }
 
 func NewDynamoStoreWithRegionObj(accessKey string, secretKey string, tableName string, region aws.Region) (*DynamoStore, error) {
