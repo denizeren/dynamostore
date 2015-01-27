@@ -21,7 +21,7 @@ See http://www.gorillatoolkit.org/pkg/sessions for full documentation on underly
 ### Example
 
     // Fetch new store.
-    store, err := NewDynamoStore("AWS_ACCESS_KEY", "AWS_SECRET_KEY", "AWS_REGION_NAME")
+    store, err := NewDynamoStore("AWS_ACCESS_KEY", "AWS_SECRET_KEY", "DYNAMODB_TABLE_NAME", "AWS_REGION_NAME")
     if err != nil {
         panic(err)
     }
